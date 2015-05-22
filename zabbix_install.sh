@@ -28,7 +28,7 @@ SERVER_INSTALL=true # if false assumed to be agent only install
 #echo "$IPv6"
 #echo "$VERSION"
 #echo "$DB_USER"
-#echo "$DB_PASS"
+	echo "$DB_PASS"
 #echo "$DB_HOST"
 #echo "$SERVER_IP"
 #echo "$SERVER_INSTALL"
@@ -61,7 +61,7 @@ then
   then
      SERVER_IP="$t1"
   else
-     SERVER_IP="192.168.0.9"
+     SERVER_IP="127.0.0.1"
   fi
   #====END Get_Server_IP
 else
@@ -208,7 +208,7 @@ fi
 cd /tmp/install
 echo " temporary install directory created"
 echo " downloading zabbix source"
-VERSION="2.0.5"
+#VERSION="2.0.5"
 
 if ! [ -e "zabbix-$VERSION.tar.gz" ]
 then
