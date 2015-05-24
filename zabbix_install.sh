@@ -1,4 +1,3 @@
-
 # error checking always needs improving
 
 
@@ -12,7 +11,6 @@
 
 
 #Set Default script variables here before running
-
 DATABASE="mysql" # option ONLY mysql at present
 IPv6=true # options true or false
 VERSION="2.0.5"
@@ -233,6 +231,13 @@ if $SERVER_INSTALL ; then
    
    #For Older Zabbix Versions than 2.0, Schemas lie elsewhere please change the directory
    cd /tmp/install/zabbix-$VERSION/database/mysql
+  
+	 if [ -n  $MySQLADMIN]
+  	 then
+		MySQLADMIN="root"
+		MySQLADMINPASS="password"
+ 	 fi
+
    cat schema.sql | mysql -u$MySQLADMIN -p$MySQLADMINPASS zabbix
    cat data.sql | mysql -u$MySQLADMIN -p$MySQLADMINPASS zabbix
    cat images.sql | mysql -u$MySQLADMIN -p$MySQLADMINPASS zabbix
@@ -256,8 +261,10 @@ if $SERVER_INSTALL ; then
    
    echo "configure -quiet -enable-server -with-net-snmp -with-libcurl -with-openipmi -with-jabber -with-ssh2 -enable-agent $build_opts"
 
+   #echo ""
+   #./configure -quiet -enable-server -with-net-snmp -with-libcurl -with-openipmi -with-jabber -with-ssh2 -enable-agent $build_opts
    echo ""
-   ./configure -quiet -enable-server -with-net-snmp -with-libcurl -with-openipmi -with-jabber -with-ssh2 -enable-agent $build_opts
+   ./configure -quiet -enable-server -with-net-snmp -with-libcurl -with-openipmi -with-ssh2 -enable-agent $build_opts
 else
    #Agents only build options
    build_opts=" -prefix=/usr -mandir=\${prefix}/share/man -infodir=\${prefix}/share/info "
