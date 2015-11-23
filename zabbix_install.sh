@@ -3,7 +3,7 @@
 
 #Adapted from script found online
 #CHANGES by Vipul Kane:
-#enhanced to support Ubuntu 12.10
+#enhanced to support Ubuntu 14.10
 #enhanced
 #server or agent install
 #added some error checking
@@ -13,7 +13,7 @@
 #Set Default script variables here before running
 DATABASE="mysql" # option ONLY mysql at present
 IPv6=true # options true or false
-VERSION="2.0.5"
+VERSION="2.4.7"
 DB_USER="zabbix"
 DB_PASS="zabb1x"
 DB_HOST="localhost"
@@ -26,7 +26,7 @@ SERVER_INSTALL=true # if false assumed to be agent only install
 #echo "$IPv6"
 #echo "$VERSION"
 #echo "$DB_USER"
-	echo "$DB_PASS"
+echo "$DB_PASS"
 #echo "$DB_HOST"
 #echo "$SERVER_IP"
 #echo "$SERVER_INSTALL"
@@ -73,7 +73,7 @@ if [ -n "$t1" ]
 then
   VERSION="$t1"
 else
-  VERSION="1.8.8"
+  VERSION="2.4.7"
 fi
 #====END Get_Version
  
@@ -168,7 +168,7 @@ echo '**********Test1***************'
       read MySQLADMINPASS
 
       $DATABASE -u$MySQLADMIN -p$MySQLADMINPASS -Bse 'CREATE DATABASE zabbix;'
-      $DATABASE -u$MySQLADMIN -p$MySQLADMINPASS -Bse "GRANT ALL ON zabbix.* TO zabbix@localhost;"
+      $DATABASE -u$MySQLADMIN -p$MySQLADMINPASS zabbix -Bse "GRANT ALL ON zabbix.* TO zabbix@localhost;"
       echo "   mysql database and user created"
     
    else
@@ -176,10 +176,10 @@ echo '**********Test1***************'
       echo "postgresql initial DB setup"
       #postgresql initial DB setup
 
-      echo -n "Input the postgre user name for this database: "
+      echo -n "Input the postgre USERNAME for this database: "
       read e DB_USER
 
-      echo -n "Input the MySQL admin user password: "
+      echo -n "Input the MySQL ADMIN user password: "
       read e MySQLADMINPASS
 
    fi
@@ -205,13 +205,13 @@ fi
 
 cd /tmp/install
 echo " temporary install directory created"
-echo " downloading zabbix source"
+echo " downloading zabbix source from: http://downloads.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/$VERSION/zabbix-$VERSION.tar.gz"
 #VERSION="2.0.5"
 
 if ! [ -e "zabbix-$VERSION.tar.gz" ]
 then
-  wget -nv http://prdownloads.sourceforge.net/zabbix/zabbix-$VERSION.tar.gz
-  #wget -nv http://downloads.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/2.0.5/zabbix-2.0.5.tar.gz
+  #wget -nv http://prdownloads.sourceforge.net/zabbix/zabbix-$VERSION.tar.gz
+  wget -nv http://downloads.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/$VERSION/zabbix-$VERSION.tar.gz?r=&ts=1448232400&use_mirror=iweb
   echo "   downloaded zabbix source"
 else
   echo "   zabbix source of correct version already exists"
@@ -235,12 +235,12 @@ if $SERVER_INSTALL ; then
 	 if [ -n  $MySQLADMIN]
   	 then
 		MySQLADMIN="root"
-		MySQLADMINPASS="password"
+		MySQLADMINPASS="Password99"
  	 fi
 
    cat schema.sql | mysql -u$MySQLADMIN -p$MySQLADMINPASS zabbix
-   cat data.sql | mysql -u$MySQLADMIN -p$MySQLADMINPASS zabbix
    cat images.sql | mysql -u$MySQLADMIN -p$MySQLADMINPASS zabbix
+   cat data.sql | mysql -u$MySQLADMIN -p$MySQLADMINPASS zabbix
 fi
 
 echo " prepare compile build options"
@@ -311,26 +311,28 @@ if $SERVER_INSTALL ; then
    echo "   Sleeping for 5 Seconds "
    sleep 5
    echo "   Make web directory"
-   DIRECTORY=/var/www/zabbix
+   DIRECTORY=/var/www/html/zabbix
    if [ ! -d "$DIRECTORY" ]; then
-      mkdir /var/www/zabbix
+      mkdir /var/www/html/zabbix
    fi
    echo "   Copy zabbix web frontend to web directory"
-   cp -a . /var/www/zabbix
+   cp -a . /var/www/html/zabbix
    echo "   Change the permissions to default apache2"
-   chown www-data:www-data -R /var/www/zabbix
+   chown www-data:www-data -R /var/www/html/zabbix
 
 
-   cat <<EOF > /etc/apache2/sites-available/zabbix
-<VirtualHost /zabbix>
-        ServerAdmin webmaster@localhost
+cat <<EOF > /etc/apache2/sites-available/zabbix
+	
+	<VirtualHost /zabbix>
+        	ServerAdmin webmaster@localhost
 
-        DocumentRoot /var/www/zabbix
-        <Directory />
-                Options FollowSymLinks Indexes MultiViews
-                AllowOverride None
-        </Directory>
-</VirtualHost>
+        	DocumentRoot /var/www/html/zabbix
+        	<Directory />
+                	Options FollowSymLinks Indexes MultiViews
+	                AllowOverride None
+        	</Directory>
+p
+	</VirtualHost>
 EOF
 
    echo "   Zabbix $VERSION installation"
@@ -362,12 +364,12 @@ if [ ! -d "$DIRECTORY" ]; then
     chmod 766 $DIRECTORY
 fi
 
-cp /tmp/install/zabbix-$VERSION/misc/conf/zabbix_agentd.conf /etc/zabbix
+cp /tmp/install/zabbix-$VERSION/conf/zabbix_agentd.conf /etc/zabbix
 
 #check for server install
 echo "**** Checking for server instllation ****"
 if $SERVER_INSTALL ; then
-   cp /tmp/install/zabbix-$VERSION/misc/conf/zabbix_server.conf /etc/zabbix
+   cp /tmp/install/zabbix-$VERSION/conf/zabbix_server.conf /etc/zabbix
    sed -i.backup -e "s/DBUser=root/DBUser=$DB_USER/g" -e "s|/tmp/zabbix_server.log|/var/log/zabbix/zabbix_server.log|g" -e "s|# PidFile=/tmp/zabbix_server.pid|PidFile=/var/run/zabbix/zabbix_server.pid|g" /etc/zabbix/zabbix_server.conf
 fi
 sed -i.backup -e "s|/tmp/zabbix_agentd.log|/var/log/zabbix/zabbix_agentd.log|g" -e "s|# PidFile=/tmp/zabbix_agentd.pid|PidFile=/var/run/zabbix/zabbix_agentd.pid|g" /etc/zabbix/zabbix_agentd.conf
