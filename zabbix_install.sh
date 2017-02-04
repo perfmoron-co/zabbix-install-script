@@ -1,13 +1,12 @@
 # error checking always needs improving
 
-
 #Adapted from script found online
 #CHANGES by Vipul Kane:
 #enhanced to support Ubuntu 14.10
 #enhanced
 #server or agent install
 #added some error checking
-####################################################
+####################################################################
 
 
 #Set Default script variables here before running
@@ -19,18 +18,13 @@ DB_PASS="zabb1x"
 DB_HOST="localhost"
 SERVER_IP="xxx.xxx.xxx.xxx" # IP of zabbix server for agents to communicate with.
 SERVER_INSTALL=true # if false assumed to be agent only install
+DATA="mysql"
 
-
-#echo "-----------------------------------------------------"
-#echo "$DATABASE"
-#echo "$IPv6"
-#echo "$VERSION"
-#echo "$DB_USER"
-echo "$DB_PASS"
-#echo "$DB_HOST"
-#echo "$SERVER_IP"
-#echo "$SERVER_INSTALL"
-#echo "-----------------------------------------------------"
+if [ "$DATABASE" == "$DATA" ];then
+      echo -n "   Input the MySQL admin user name: "
+else
+	echo -n " NONONONO"
+fi
 
 
 #====END of User Varables==================
@@ -42,7 +36,7 @@ clear
 
 # Get Input from Users
 echo "Capture User Options:"
-echo "====================="
+echo "========================================================"
 echo "Please answer the following questions."
 echo "Hitting return will continue with the default option"
 echo
@@ -154,12 +148,11 @@ else
    exit 1
 fi
 
-DATABASE="mysql"
+
 echo "database :$DATABASE"
 
 if $SERVER_INSTALL ; then
 
-echo '**********Test1***************'
    if [ $DATABASE == "mysql" ]; then
       echo -n "   Input the MySQL admin user name: "
       read MySQLADMIN
@@ -189,10 +182,10 @@ fi
 
 
 
-# Step 4 ================================
-################
-#Zabbix download
-################
+#========================= step 4 ============================
+##############################################################
+#			Zabbix download
+##############################################################
 echo
 echo "Installation Step 4 Started"
 
@@ -206,12 +199,11 @@ fi
 cd /tmp/install
 echo " temporary install directory created"
 echo " downloading zabbix source from: http://downloads.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/$VERSION/zabbix-$VERSION.tar.gz"
-#VERSION="2.0.5"
 
 if ! [ -e "zabbix-$VERSION.tar.gz" ]
 then
-  #wget -nv http://prdownloads.sourceforge.net/zabbix/zabbix-$VERSION.tar.gz
-  wget -nv http://downloads.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/$VERSION/zabbix-$VERSION.tar.gz?r=&ts=1448232400&use_mirror=iweb
+  wget -nv http://repo.zabbix.com/zabbix/3.2/ubuntu/pool/main/z/zabbix/zabbix_$VERSION.orig.tar.gz
+  #wget -nv http://downloads.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/$VERSION/zabbix-$VERSION.tar.gz?r=&ts=1448232400&use_mirror=iweb
   echo "   downloaded zabbix source"
 else
   echo "   zabbix source of correct version already exists"
@@ -331,7 +323,6 @@ cat <<EOF > /etc/apache2/sites-available/zabbix
                 	Options FollowSymLinks Indexes MultiViews
 	                AllowOverride None
         	</Directory>
-p
 	</VirtualHost>
 EOF
 
