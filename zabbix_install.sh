@@ -12,7 +12,7 @@
 #Set Default script variables here before running
 DATABASE="mysql" # option ONLY mysql at present
 IPv6=true # options true or false
-VERSION="2.4.7"
+VERSION="3.0.2"
 DB_USER="zabbix"
 DB_PASS="zabb1x"
 DB_HOST="localhost"
@@ -20,11 +20,24 @@ SERVER_IP="xxx.xxx.xxx.xxx" # IP of zabbix server for agents to communicate with
 SERVER_INSTALL=true # if false assumed to be agent only install
 DATA="mysql"
 
+
 if [ "$DATABASE" == "$DATA" ];then
       echo -n "   Input the MySQL admin user name: "
 else
-	echo -n " NONONONO"
+      echo -n "   Username not saved! "
 fi
+
+
+#echo "-----------------------------------------------------"
+#echo "$DATABASE"
+#echo "$IPv6"
+#echo "$VERSION"
+#echo "$DB_USER"
+#echo "$DB_PASS"
+#echo "$DB_HOST"
+#echo "$SERVER_IP"
+#echo "$SERVER_INSTALL"
+#echo "----------------------------------------------------"
 
 
 #====END of User Varables==================
@@ -67,7 +80,7 @@ if [ -n "$t1" ]
 then
   VERSION="$t1"
 else
-  VERSION="2.4.7"
+  VERSION="3.0.2"
 fi
 #====END Get_Version
  
@@ -148,12 +161,16 @@ else
    exit 1
 fi
 
-
 echo "database :$DATABASE"
 
 if $SERVER_INSTALL ; then
 
    if [ $DATABASE == "mysql" ]; then
+=======
+if $SERVER_INSTALL ; then
+
+echo '**********Test1***************'
+   if [ $DATABASE = "mysql" ]; then
       echo -n "   Input the MySQL admin user name: "
       read MySQLADMIN
 
@@ -329,7 +346,7 @@ EOF
    echo "   Zabbix $VERSION installation"
 fi
 
-#step 5 for agents only they join here…
+#step 5 for agents only they join here
 
 ln -s /usr/bin/fping /usr/sbin/fping
 if $IPv6 ; then
