@@ -12,7 +12,7 @@
 #Set Default script variables here before running
 DATABASE="mysql" # option ONLY mysql at present
 IPv6=true # options true or false
-VERSION="3.0.2"
+VERSION="3.2.0"
 DB_USER="zabbix"
 DB_PASS="zabb1x"
 DB_HOST="localhost"
@@ -165,11 +165,6 @@ echo "database :$DATABASE"
 
 if $SERVER_INSTALL ; then
 
-   if [ $DATABASE == "mysql" ]; then
-=======
-if $SERVER_INSTALL ; then
-
-echo '**********Test1***************'
    if [ $DATABASE = "mysql" ]; then
       echo -n "   Input the MySQL admin user name: "
       read MySQLADMIN
@@ -203,7 +198,6 @@ fi
 ##############################################################
 #			Zabbix download
 ##############################################################
-echo
 echo "Installation Step 4 Started"
 
 cd /tmp/
@@ -215,7 +209,7 @@ fi
 
 cd /tmp/install
 echo " temporary install directory created"
-echo " downloading zabbix source from: http://downloads.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/$VERSION/zabbix-$VERSION.tar.gz"
+echo " downloading zabbix source from http://repo.zabbix.com/zabbix/3.2/ubuntu/pool/main/z/zabbix/zabbix_$VERSION.orig.tar.gz"
 
 if ! [ -e "zabbix-$VERSION.tar.gz" ]
 then
@@ -244,7 +238,7 @@ if $SERVER_INSTALL ; then
 	 if [ -n  $MySQLADMIN]
   	 then
 		MySQLADMIN="root"
-		MySQLADMINPASS="Password99"
+		MySQLADMINPASS="zabbix"
  	 fi
 
    cat schema.sql | mysql -u$MySQLADMIN -p$MySQLADMINPASS zabbix
