@@ -12,7 +12,7 @@
 #Set Default script variables here before running
 DATABASE="mysql" # option ONLY mysql at present
 IPv6=true # options true or false
-VERSION="3.2.0"
+VERSION="3.2.2"
 DB_USER="zabbix"
 DB_PASS="zabb1x"
 DB_HOST="localhost"
