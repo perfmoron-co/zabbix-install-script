@@ -14,29 +14,29 @@ DATABASE="mysql" # option ONLY mysql at present
 IPv6=true # options true or false
 VERSION="3.2.2"
 DB_USER="zabbix"
-DB_PASS="zabb1x"
+DB_PASS="zabbix"
 DB_HOST="localhost"
 SERVER_IP="xxx.xxx.xxx.xxx" # IP of zabbix server for agents to communicate with.
 SERVER_INSTALL=true # if false assumed to be agent only install
 DATA="mysql"
 
 
-if [ "$DATABASE" == "$DATA" ];then
+if [ "$DATABASE" == "$DATA" ]
+then
       echo -n "   Input the MySQL admin user name: "
 else
       echo -n "   Username not saved! "
 fi
 
-
 #echo "-----------------------------------------------------"
-#echo "$DATABASE"
-#echo "$IPv6"
-#echo "$VERSION"
-#echo "$DB_USER"
-#echo "$DB_PASS"
-#echo "$DB_HOST"
-#echo "$SERVER_IP"
-#echo "$SERVER_INSTALL"
+echo "$DATABASE"
+echo "$IPv6"
+echo "$VERSION"
+echo "$DB_USER"
+echo "$DB_PASS"
+echo "$DB_HOST"
+echo "$SERVER_IP"
+echo "$SERVER_INSTALL"
 #echo "----------------------------------------------------"
 
 
@@ -80,7 +80,7 @@ if [ -n "$t1" ]
 then
   VERSION="$t1"
 else
-  VERSION="3.0.2"
+  VERSION="3.2.2"
 fi
 #====END Get_Version
  
@@ -211,17 +211,26 @@ cd /tmp/install
 echo " temporary install directory created"
 echo " downloading zabbix source from http://repo.zabbix.com/zabbix/3.2/ubuntu/pool/main/z/zabbix/zabbix_$VERSION.orig.tar.gz"
 
-if ! [ -e "zabbix-$VERSION.tar.gz" ]
+if ! [ -e "zabbix_$VERSION.orig.tar.gz" ]
 then
   wget -nv http://repo.zabbix.com/zabbix/3.2/ubuntu/pool/main/z/zabbix/zabbix_$VERSION.orig.tar.gz
   #wget -nv http://downloads.sourceforge.net/project/zabbix/ZABBIX%20Latest%20Stable/$VERSION/zabbix-$VERSION.tar.gz?r=&ts=1448232400&use_mirror=iweb
   echo "   downloaded zabbix source"
+#elif ! [-e "zabbix-$VERSION.tar.gz" ]
+# then
+#  wget -nv http://repo.zabbix.com/zabbix/3.2/ubuntu/pool/main/z/zabbix/zabbix_$VERSION.tar.gz
+#  echo "   downloaded zabbix source"
 else
   echo "   zabbix source of correct version already exists"
 fi
 
 echo " untar zabbix source"
-tar zxf zabbix-$VERSION.tar.gz
+if ! [ -e "zabbix_$VERSION.orig.tar.gz"]
+then
+	tar zxf zabbix_$VERSION.orig.tar.gz
+else
+	tar zxf zabbix-$VERSION.tar.gz
+fi
 
 echo " prepare directory and file permissions"
 chmod -R 777 /tmp/install/*
